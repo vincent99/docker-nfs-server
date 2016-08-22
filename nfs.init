@@ -1,8 +1,13 @@
 #!/bin/bash
 
+echo 'NEED_STATD="yes"' >> /etc/default/nfs-common
+echo 'STATDOPTS="--port 4000 --outgoing-port 4001"' >> /etc/default/nfs-common
+export 'NEED_SVCGSSD="no"' >> /etc/default/nfs-kernel-server
+
 . /etc/default/nfs-kernel-server
 . /etc/default/nfs-common
 
+modprobe nfsd
 rpcbind
 service nfs-kernel-server start
 

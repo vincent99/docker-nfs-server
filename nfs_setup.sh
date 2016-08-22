@@ -2,11 +2,14 @@
 
 set -e
 
-mounts="${@}"
+echo "#nfs-server" >/etc/exports
+echo "/exports *(fsid=0,rw,sync,no_subtree_check)" >>/etc/exports
 
-for mnt in "${mounts[@]}"; do
+for mnt in "${@}"; do
   src=$(echo $mnt | awk -F':' '{ print $1 }')
-  echo "$src *(rw,sync,no_subtree_check,fsid=0,no_root_squash)" >> /etc/exports
+  mkdir -p "/exports${src}"
+  chmod 777 "/exports${src}"
+  echo "/exports${src} *(fsid=0,rw,insecure,sync,no_subtree_check)" >> /etc/exports
 done
 
 exec runsvdir /etc/sv
